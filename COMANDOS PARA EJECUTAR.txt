@@ -1,0 +1,44 @@
+COMANDOS PARA EJECUTAR ENTREGA 3
+
+t1:
+cd ~/ardupilot/ArduCopter
+../Tools/autotest/sim_vehicle.py -w -v ArduCopter --console --map \
+  --out=udp:127.0.0.1:14550 \
+  --out=udp:127.0.0.1:14551
+
+
+depues de pre-arm Good:
+
+	mode GUIDED
+
+	arm throttle
+	takeoff 10
+	
+t2:
+source ~/ros2_venv/bin/activate
+source /opt/ros/jazzy/setup.bash
+source ~/ros2_ws/install/setup.bash
+ros2 run mavlink_ros battery_gps_node
+
+
+t3:
+source ~/ros2_venv/bin/activate
+source /opt/ros/jazzy/setup.bash
+source ~/ros2_ws/install/setup.bash
+ros2 run mavlink_ros mission_control_node
+
+
+Sobre los nodos:
+
+Para ver solo batería:
+	ros2 topic echo /battery_status
+
+Para ver solo el objetivo/posición objetivo:
+	ros2 topic echo /target_gps
+
+
+
+ros2 topic echo /battery_status --field data
+ros2 topic echo /target_gps --field latitude
+ros2 topic echo /target_gps --field longitude
+ros2 topic echo /target_gps --field altitude
