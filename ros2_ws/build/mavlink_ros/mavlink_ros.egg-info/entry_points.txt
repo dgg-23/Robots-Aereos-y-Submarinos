@@ -1,0 +1,3 @@
+[console_scripts]
+battery_gps_node = mavlink_ros.battery_gps_node:main
+mission_control_node = mavlink_ros.mission_control_node:main

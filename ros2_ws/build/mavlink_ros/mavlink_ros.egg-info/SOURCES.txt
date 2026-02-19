@@ -1,0 +1,14 @@
+package.xml
+setup.cfg
+setup.py
+mavlink_ros/__init__.py
+mavlink_ros/battery_gps_node.py
+mavlink_ros/mission_control_node.py
+mavlink_ros.egg-info/PKG-INFO
+mavlink_ros.egg-info/SOURCES.txt
+mavlink_ros.egg-info/dependency_links.txt
+mavlink_ros.egg-info/entry_points.txt
+mavlink_ros.egg-info/requires.txt
+mavlink_ros.egg-info/top_level.txt
+mavlink_ros.egg-info/zip-safe
+resource/mavlink_ros

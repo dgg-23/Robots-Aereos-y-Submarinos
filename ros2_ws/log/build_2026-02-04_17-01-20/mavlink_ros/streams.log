@@ -1,0 +1,25 @@
+[0.558s] Invoking command in '/home/dani/ros2_ws/build/mavlink_ros': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PS1=(ros2_venv) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/dani/ros2_ws/build/mavlink_ros/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/dani/ros2_ws/install/mavlink_ros/lib/python3.12/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(ros2_venv) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/dani/ros2_ws/build/mavlink_ros/build --no-deps symlink_data
+[0.783s] running develop
+[0.921s] running egg_info
+[0.921s] creating mavlink_ros.egg-info
+[0.933s] writing mavlink_ros.egg-info/PKG-INFO
+[0.933s] writing dependency_links to mavlink_ros.egg-info/dependency_links.txt
+[0.933s] writing entry points to mavlink_ros.egg-info/entry_points.txt
+[0.933s] writing requirements to mavlink_ros.egg-info/requires.txt
+[0.933s] writing top-level names to mavlink_ros.egg-info/top_level.txt
+[0.933s] writing manifest file 'mavlink_ros.egg-info/SOURCES.txt'
+[0.958s] reading manifest file 'mavlink_ros.egg-info/SOURCES.txt'
+[0.958s] writing manifest file 'mavlink_ros.egg-info/SOURCES.txt'
+[0.972s] running build_ext
+[0.972s] Creating /home/dani/ros2_ws/install/mavlink_ros/lib/python3.12/site-packages/mavlink-ros.egg-link (link to .)
+[0.972s] Installing battery_gps_node script to /home/dani/ros2_ws/install/mavlink_ros/lib/mavlink_ros
+[0.972s] Installing mission_control_node script to /home/dani/ros2_ws/install/mavlink_ros/lib/mavlink_ros
+[0.972s] 
+[0.973s] Installed /home/dani/ros2_ws/build/mavlink_ros
+[0.973s] running symlink_data
+[0.973s] creating /home/dani/ros2_ws/install/mavlink_ros/share/ament_index
+[0.973s] creating /home/dani/ros2_ws/install/mavlink_ros/share/ament_index/resource_index
+[0.973s] creating /home/dani/ros2_ws/install/mavlink_ros/share/ament_index/resource_index/packages
+[0.973s] symbolically linking /home/dani/ros2_ws/build/mavlink_ros/resource/mavlink_ros -> /home/dani/ros2_ws/install/mavlink_ros/share/ament_index/resource_index/packages
+[0.973s] symbolically linking /home/dani/ros2_ws/build/mavlink_ros/package.xml -> /home/dani/ros2_ws/install/mavlink_ros/share/mavlink_ros
+[0.991s] Invoked command in '/home/dani/ros2_ws/build/mavlink_ros' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PS1=(ros2_venv) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/dani/ros2_ws/build/mavlink_ros/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/dani/ros2_ws/install/mavlink_ros/lib/python3.12/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(ros2_venv) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/dani/ros2_ws/build/mavlink_ros/build --no-deps symlink_data
