@@ -6,9 +6,9 @@ import subprocess
 from datetime import datetime
 from pymavlink import mavutil
 
-# ----------------------------
+
 # CONFIGURACIÓN
-# ----------------------------
+
 CONNECTION_STRING = "udp:127.0.0.1:14550"
 
 RADIO_ORBITA = 6
@@ -25,25 +25,25 @@ SDP_PATH = os.path.expanduser("~/gz_cam.sdp")
 TIEMPO_ESTABILIZACION_S = 4.0
 ESPERA_YAW_S = 1.0
 ESPERA_CAMARA_PRE_FOTO_S = 0.8   # tiempo para que ROI/gimbal terminen de asentarse
-ESPERA_POST_FOTO_S = 1.0         # lo que pediste: 1 segundo tras hacer la foto
+ESPERA_POST_FOTO_S = 1.0         # 1 segundo tras hacer la foto
 
-# Criterios para "parado por completo"
+# Criterios parado por completo
 UMBRAL_DIST_M = 2.0              # cerca del waypoint
 UMBRAL_VEL_MS = 0.25             # velocidad casi 0 (m/s)
-TIEMPO_ESTABLE_PARADO_S = 1.0    # cuánto tiempo debe mantenerse parado
+TIEMPO_ESTABLE_PARADO_S = 1.0    # tiempo debe mantenerse parado
 
 # Yaw (cara al centro)
-TOL_YAW_DEG = 6.0                # tolerancia de orientación
+TOL_YAW_DEG = 6.0                # tolerancia de orient
 
 # Gimbal
 USAR_GIMBAL_PITCH = False
 GIMBAL_PITCH_DEG = -65
-GIMBAL_USA_CENTIDEG = False      # si no se nota, ponlo en True
+GIMBAL_USA_CENTIDEG = False      # probar a ponerlo true
 
 
-# ----------------------------
+
 # UTILIDADES GEO
-# ----------------------------
+
 def calcular_bearing(lat1, lon1, lat2, lon2):
     """Bearing (0=Norte) desde (lat1,lon1) a (lat2,lon2) en grados."""
     phi1 = math.radians(lat1)
@@ -68,14 +68,14 @@ def distancia_aprox_m(lat1, lon1, lat2, lon2):
 
 
 def diff_ang_deg(a, b):
-    """Diferencia mínima entre ángulos en grados."""
+    """Diferencia min entre angulos en grados."""
     d = (a - b + 180) % 360 - 180
     return abs(d)
 
 
-# ----------------------------
+
 # MAVLINK / DRON
-# ----------------------------
+
 def conectar():
     print(f"Conectando a {CONNECTION_STRING}...")
     vehicle = mavutil.mavlink_connection(CONNECTION_STRING)
@@ -151,12 +151,11 @@ def yaw_hacia(vehicle, heading_deg, rate_deg_s=25):
 
 
 def set_gimbal_pitch(vehicle, pitch_deg):
-    """Inclina gimbal (si tu modelo lo soporta)."""
+    """Inclina gimbal"""
     val = pitch_deg
     if GIMBAL_USA_CENTIDEG:
         val = int(pitch_deg * 100)
 
-    # ✅ corregido: command_long_send lleva 7 params tras el '0'
     vehicle.mav.command_long_send(
         vehicle.target_system,
         vehicle.target_component,
@@ -170,11 +169,10 @@ def set_gimbal_pitch(vehicle, pitch_deg):
 T0 = time.time()
 
 def ir_a(vehicle, lat, lon, alt):
-    # Máscara: solo posición
+    # mascara
     type_mask = 0b0000111111111000
     time_boot_ms = int((time.time() - T0) * 1000)
 
-    # ✅ corregido: yaw,yaw_rate son 2 valores (no 3)
     vehicle.mav.set_position_target_global_int_send(
         time_boot_ms,
         vehicle.target_system,
@@ -249,9 +247,9 @@ def esperar_yaw_al_centro(vehicle, heading_obj, timeout_s=12):
     return False
 
 
-# ----------------------------
+
 # CÁMARA (ffmpeg + SDP)
-# ----------------------------
+
 def capturar_foto_ffmpeg(output_path, max_reintentos=5, timeout_s=8):
     if not os.path.exists(SDP_PATH):
         raise FileNotFoundError(f"No existe el SDP en {SDP_PATH}.")
@@ -290,9 +288,8 @@ def warmup_camara():
         time.sleep(0.7)
 
 
-# ----------------------------
+
 # MAIN
-# ----------------------------
 def main():
     carpeta_dataset = f"dataset_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     os.makedirs(carpeta_dataset, exist_ok=True)
@@ -320,39 +317,34 @@ def main():
 
     with open(csv_file, "w", newline="") as f:
         writer = csv.writer(f)
-        # Usamos tu cabecera original del CSV exactamente igual
+        # cabecera CSV
         writer.writerow(["ID", "Filename", "Lat", "Lon", "Alt", "Heading", "AltObjetivo"])
 
         for i, (lat_wp, lon_wp, alt_wp) in enumerate(puntos, start=1):
             
-            # --- 1. VIAJE Y PARADA ---
+            # 1. VIAJE Y PARADA
             ir_a(drone, lat_wp, lon_wp, alt_wp)
             print(f"[{i}] Viajando al punto y frenando...")
             esperar_llegada_y_parada(drone, lat_wp, lon_wp, timeout_s=35)
             time.sleep(TIEMPO_ESTABILIZACION_S)
 
-            # --- 2. ORIENTACIÓN CONDICIONAL AL CENTRO ---
+            # 2. ORIENTACION CONDICIONAL AL CENTRO
             st = obtener_estado(drone)
             curr_lat, curr_lon = (st[0], st[1]) if st else (lat_wp, lon_wp)
             
             bearing = calcular_bearing(curr_lat, curr_lon, CENTRO_LAT, CENTRO_LON)
             yaw_hacia(drone, bearing)
             
-            # ¡AQUÍ ESTÁ LA MAGIA CONDICIONAL!
-            # En vez de esperar un tiempo fijo, lee la brújula hasta que encaje con el centro
             print(f"[{i}] Girando y comprobando que el morro apunte al centro ({bearing:.1f}°)...")
             logrado = esperar_yaw_al_centro(drone, bearing, timeout_s=15)
-            
-            if not logrado:
-                print(f"[{i}] ⚠️ Aviso: Tardó mucho en girar, continuando de todos modos.")
 
-            # --- 3. ENFOQUE FINAL ---
+            # 3. ENFOQUE FINAL
             apuntar_roi(drone, CENTRO_LAT, CENTRO_LON, ROI_ALT)
             if USAR_GIMBAL_PITCH:
                 set_gimbal_pitch(drone, GIMBAL_PITCH_DEG)
             time.sleep(ESPERA_CAMARA_PRE_FOTO_S)
 
-            # --- 4. CAPTURA Y TELEMETRÍA ---
+            # 4. CAPTURA Y TELEMETRiA
             nombre_archivo = f"foto_{i:03d}.jpg"
             ruta_foto = os.path.join(carpeta_dataset, nombre_archivo)
             
@@ -371,7 +363,7 @@ def main():
             else:
                 print(f"[FOTO {i}/{len(puntos)}] ERROR capturando frame (se registra telemetría igualmente).")
             
-            # --- 5. ESPERA FINAL ---
+            # 5. ESPERA FINAL
             time.sleep(ESPERA_POST_FOTO_S)
 
     print("Misión completada. Aterrizando...")
